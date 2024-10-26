@@ -1,7 +1,8 @@
 # requirements.in
 
 # AWS SDK
-boto3==1.30.0
+boto3==1.28.57
+
 
 # Streamlit and UI Components
 streamlit==1.25.0
@@ -35,6 +36,6 @@ filelock==3.16.1
 fsspec==2024.10.0
 jsonschema==4.23.0
 marshmallow==3.23.0
-...
+
 
 # Add other dependencies as per your project needs

@@ -23,30 +23,40 @@ attrs==24.2.0
     #   referencing
 blinker==1.8.2
     # via streamlit
-boto3==1.35.48
+boto3==1.28.57
     # via -r requirements.in
-botocore==1.35.48
+botocore==1.31.85
     # via
     #   boto3
     #   s3transfer
 cachetools==5.5.0
     # via streamlit
 certifi==2024.8.30
-    # via
-    #   opensearch-py
-    #   requests
+    # via requests
 charset-normalizer==3.4.0
     # via requests
+ci-info==0.3.0
+    # via etelemetry
 click==8.1.7
     # via
+    #   nipype
     #   nltk
     #   streamlit
+configobj==5.0.9
+    # via fitz
+configparser==7.1.0
+    # via fitz
+etelemetry==0.3.1
+    # via nipype
 filelock==3.16.1
     # via
     #   -r requirements.in
     #   huggingface-hub
+    #   nipype
     #   torch
     #   transformers
+fitz==0.0.1.dev2
+    # via -r requirements.in
 frozenlist==1.5.0
     # via
     #   aiohttp
@@ -60,6 +70,8 @@ gitdb==4.0.11
     # via gitpython
 gitpython==3.1.43
     # via streamlit
+httplib2==0.22.0
+    # via fitz
 huggingface-hub==0.26.1
     # via
     #   sentence-transformers
@@ -71,6 +83,10 @@ idna==3.10
     #   yarl
 importlib-metadata==6.11.0
     # via streamlit
+importlib-resources==6.4.5
+    # via nibabel
+isodate==0.6.1
+    # via rdflib
 jinja2==3.1.4
     # via
     #   altair
@@ -90,6 +106,12 @@ jsonschema==4.23.0
     #   altair
 jsonschema-specifications==2024.10.1
     # via jsonschema
+looseversion==1.3.0
+    # via nipype
+lxml==5.3.0
+    # via
+    #   prov
+    #   pyxnat
 markdown-it-py==3.0.0
     # via rich
 markupsafe==3.0.2
@@ -107,14 +129,26 @@ multidict==6.1.0
 narwhals==1.10.0
     # via altair
 networkx==3.4.2
-    # via torch
+    # via
+    #   nipype
+    #   prov
+    #   torch
+nibabel==5.3.2
+    # via
+    #   fitz
+    #   nipype
+nipype==1.8.6
+    # via fitz
 nltk==3.8.1
     # via
     #   -r requirements.in
     #   sentence-transformers
-numpy==1.25.0
+numpy==1.26.4
     # via
     #   -r requirements.in
+    #   fitz
+    #   nibabel
+    #   nipype
     #   pandas
     #   pyarrow
     #   pydeck
@@ -124,19 +158,23 @@ numpy==1.25.0
     #   streamlit
     #   torchvision
     #   transformers
-opensearch-py==2.1.0
-    # via -r requirements.in
 packaging==23.2
     # via
     #   altair
+    #   etelemetry
     #   huggingface-hub
     #   marshmallow
+    #   nibabel
+    #   nipype
     #   streamlit
     #   transformers
 pandas==2.0.0
     # via
     #   -r requirements.in
+    #   fitz
     #   streamlit
+pathlib==1.0.1
+    # via pyxnat
 pillow==9.5.0
     # via
     #   streamlit
@@ -145,12 +183,16 @@ propcache==0.2.0
     # via yarl
 protobuf==4.25.5
     # via streamlit
+prov==2.0.1
+    # via nipype
 pyarrow==17.0.0
     # via streamlit
 pydeck==0.9.1
     # via
     #   -r requirements.in
     #   streamlit
+pydot==3.0.2
+    # via nipype
 pygments==2.18.0
     # via rich
 pympler==1.1
@@ -159,10 +201,17 @@ pymupdf==1.23.7
     # via -r requirements.in
 pymupdfb==1.23.7
     # via pymupdf
+pyparsing==3.2.0
+    # via
+    #   httplib2
+    #   pydot
+    #   rdflib
 python-dateutil==2.9.0.post0
     # via
     #   botocore
+    #   nipype
     #   pandas
+    #   prov
     #   streamlit
 python-dotenv==1.0.0
     # via -r requirements.in
@@ -170,10 +219,16 @@ pytz==2024.2
     # via pandas
 pytz-deprecation-shim==0.1.0.post0
     # via tzlocal
+pyxnat==1.6.2
+    # via fitz
 pyyaml==6.0.2
     # via
     #   huggingface-hub
     #   transformers
+rdflib==6.3.2
+    # via
+    #   nipype
+    #   prov
 referencing==0.35.1
     # via
     #   jsonschema
@@ -185,20 +240,18 @@ regex==2024.9.11
 requests==2.32.3
     # via
     #   -r requirements.in
+    #   etelemetry
     #   huggingface-hub
-    #   opensearch-py
-    #   requests-aws4auth
+    #   pyxnat
     #   streamlit
     #   transformers
-requests-aws4auth==1.3.1
-    # via -r requirements.in
 rich==13.9.3
     # via streamlit
 rpds-py==0.20.0
     # via
     #   jsonschema
     #   referencing
-s3transfer==0.10.3
+s3transfer==0.7.0
     # via boto3
 safetensors==0.4.5
     # via transformers
@@ -208,14 +261,20 @@ scikit-learn==1.2.2
     #   sentence-transformers
 scipy==1.14.1
     # via
+    #   fitz
+    #   nipype
     #   scikit-learn
     #   sentence-transformers
 sentence-transformers==2.2.2
     # via -r requirements.in
 sentencepiece==0.2.0
     # via sentence-transformers
+simplejson==3.19.3
+    # via nipype
 six==1.16.0
-    # via python-dateutil
+    # via
+    #   isodate
+    #   python-dateutil
 smmap==5.0.1
     # via gitdb
 streamlit==1.25.0
@@ -244,6 +303,8 @@ tqdm==4.66.5
     #   nltk
     #   sentence-transformers
     #   transformers
+traits==6.3.2
+    # via nipype
 transformers==4.46.0
     # via sentence-transformers
 typing-extensions==4.12.2
@@ -251,6 +312,7 @@ typing-extensions==4.12.2
     #   altair
     #   huggingface-hub
     #   multidict
+    #   nibabel
     #   rich
     #   streamlit
     #   torch
@@ -260,10 +322,9 @@ tzdata==2024.2
     #   pytz-deprecation-shim
 tzlocal==4.3.1
     # via streamlit
-urllib3==1.26.20
+urllib3==2.0.7
     # via
     #   botocore
-    #   opensearch-py
     #   requests
 validators==0.34.0
     # via streamlit

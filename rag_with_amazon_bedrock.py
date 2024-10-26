@@ -98,7 +98,7 @@ def get_response_llm(llm, vectorstore_faiss, query):
         st.write("Detailed Bedrock error: ", str(e))
 
 def main():
-    st.set_page_config("RAG Demo")
+    st.set_page_config("RAG Demo",layout="wide")
     st.header("End-to-End RAG Application")
 
     # PDF uploader
