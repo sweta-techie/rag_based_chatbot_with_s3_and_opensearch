@@ -1,0 +1,40 @@
+# requirements.in
+
+# AWS SDK
+boto3==1.30.0
+
+# Streamlit and UI Components
+streamlit==1.25.0
+
+# PDF Processing
+PyMuPDF==1.23.7
+
+# NLP and Tokenization
+nltk==3.8.1
+
+# Data Processing
+numpy>=1.25.0
+pandas==2.0.0
+scikit-learn==1.2.2
+sentence-transformers==2.2.2
+
+# Visualization
+altair==5.4.1
+pydeck==0.9.1
+
+# HTTP Requests
+aiohttp==3.10.10
+requests==2.32.3
+
+# Environment Variables
+python-dotenv==1.0.0
+
+# Utility Libraries
+fitz
+filelock==3.16.1
+fsspec==2024.10.0
+jsonschema==4.23.0
+marshmallow==3.23.0
+...
+
+# Add other dependencies as per your project needs
