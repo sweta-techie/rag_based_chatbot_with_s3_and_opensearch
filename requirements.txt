@@ -224,7 +224,7 @@ safetensors==0.4.5
 scikit-learn==1.5.2
 scipy==1.14.1
 seaborn==0.13.2
-segment_anything @ file:///Users/sweta/Documents/Eitacies/BackgroundDetection/segment-anything
+# segment_anything @ file:///Users/sweta/Documents/Eitacies/BackgroundDetection/segment-anything
 Send2Trash==1.8.3
 sentence-transformers==3.2.0
 sentencepiece==0.2.0
