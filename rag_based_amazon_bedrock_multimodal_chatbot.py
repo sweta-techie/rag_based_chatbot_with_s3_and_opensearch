@@ -11,7 +11,7 @@ from langchain.embeddings import BedrockEmbeddings
 from langchain_community.llms import Bedrock
 from langchain.prompts import PromptTemplate
 from langchain.chains import RetrievalQA
-from langchain.vectorstores import FAISS
+from langchain_community.vectorstores import FAISS
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from tempfile import NamedTemporaryFile
 
