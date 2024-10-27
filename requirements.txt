@@ -337,6 +337,7 @@ pdfminer.six
 langchain>=0.0.100
 langchain-community
 faiss-cpu
+tesseract
 
 
 
