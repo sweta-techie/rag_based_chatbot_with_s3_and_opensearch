@@ -335,6 +335,7 @@ zipp==3.20.2
 pytesseract
 pdfminer.six
 langchain>=0.0.100
+langchain-community
 
 
 
