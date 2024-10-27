@@ -201,7 +201,7 @@ pypdf==4.3.1
 PyPDF2==3.0.1
 PyPika==0.48.9
 pyproject_hooks==1.2.0
-pytesseract==0.3.13
+pytesseract
 python-dateutil==2.9.0.post0
 python-dotenv==1.0.1
 python-json-logger==2.0.7
