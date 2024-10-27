@@ -7,13 +7,15 @@ from PIL import Image
 import pytesseract
 from io import BytesIO
 from pdfminer.high_level import extract_text
-from langchain.embeddings import BedrockEmbeddings
+from langchain_community.embeddings import BedrockEmbeddings
 from langchain_community.llms import Bedrock
 from langchain.prompts import PromptTemplate
 from langchain.chains import RetrievalQA
 from langchain_community.vectorstores import FAISS
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from tempfile import NamedTemporaryFile
+
+pytesseract.pytesseract.tesseract_cmd = '/opt/homebrew/bin/tesseract'
 
 # Configure the page layout to "wide"
 st.set_page_config(layout="wide")
