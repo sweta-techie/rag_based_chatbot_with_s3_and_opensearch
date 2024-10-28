@@ -11,7 +11,7 @@ from langchain_community.embeddings import BedrockEmbeddings
 from langchain_community.llms import Bedrock
 from langchain.prompts import PromptTemplate
 from langchain.chains import RetrievalQA
-from langchain_community.vectorstores import FAISS
+# from langchain_community.vectorstores import FAISS
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from tempfile import NamedTemporaryFile
 
@@ -119,10 +119,10 @@ def main():
         )
 
         # Create vector store
-        vectorstore = FAISS.from_documents(
-            docs,
-            bedrock_embeddings
-        )
+        # vectorstore = FAISS.from_documents(
+        #     docs,
+        #     bedrock_embeddings
+        # )
 
         # Define the prompt template
         prompt_template = """
