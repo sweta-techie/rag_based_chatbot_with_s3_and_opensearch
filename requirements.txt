@@ -698,3 +698,6 @@ zipp==3.20.2
 easyocr
 pdfminer.six
 langchain_community
+langchain_aws
+# langchain
+faiss-cpu
