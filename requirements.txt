@@ -369,8 +369,7 @@ packaging==23.2
     #   streamlit
     #   thinc
     #   transformers
-    #   visualdl
-paddleocr==2.7.0.0
+# paddleocr>=2.0.1
     # via -r requirements.in
 pandas==2.0.0
     # via
@@ -444,7 +443,7 @@ pygments==2.18.0
     #   rich
 pympler==1.1
     # via -r requirements.in
-pymupdf==1.20.0
+pymupdf==1.23.7
     # via
     #   -r requirements.in
     #   paddleocr
