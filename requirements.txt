@@ -213,7 +213,7 @@ keybert==0.8.1
     # via -r requirements.in
 kiwisolver==1.4.7
     # via matplotlib
-langchain==0.0.318
+langchain>=0.3.4,<0.4.0
     # via -r requirements.in
 langcodes==3.4.1
     # via
