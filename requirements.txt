@@ -343,7 +343,7 @@ numpy==1.26.4
     #   visualdl
 openai==0.27.10
     # via -r requirements.in
-# opencv-contrib-python==4.6.0.66
+opencv-contrib-python==4.6.0.66
     # via paddleocr
 # opencv-python==4.6.0.66
     # via
@@ -722,5 +722,5 @@ zipp==3.20.2
 langchain-aws==0.1.17
 pdfminer-six
 # opencv-python==4.5.5.64
-# opencv-python-headless==4.5.3.56
+opencv-python-headless==4.5.3.56
 langchain-community
