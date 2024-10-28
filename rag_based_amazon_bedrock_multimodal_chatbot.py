@@ -108,7 +108,7 @@ def process_uploaded_files(uploaded_file):
 
 def main():
     st.title("Multimodal Chatbot with Image and PDF Support")
-    st.write("Upload an image or PDF containing text and ask questions about it.")
+    st.write("Upload an image or PDF containing text and ask questions about it or any general knowledge question.")
     uploaded_file = st.file_uploader("Choose an image or PDF...", type=["jpg", "jpeg", "png", "pdf"])
 
     if 'chat_history' not in st.session_state:
@@ -235,6 +235,10 @@ Answer:
                 try:
                     response = st.session_state['qa'].invoke({"query": user_input})
                     answer = response['result']
+                    # Check if the answer indicates the model doesn't know
+                    if "I don't know" in answer or "cannot find sufficient information" in answer.lower():
+                        # Use LLM directly without context
+                        answer = st.session_state['llm'](user_input)
                     st.session_state.chat_history.append({"question": user_input, "answer": answer})
                 except Exception as e:
                     logger.error(f"Failed to generate a response: {str(e)}")
