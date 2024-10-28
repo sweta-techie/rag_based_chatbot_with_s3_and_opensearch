@@ -722,3 +722,4 @@ zipp==3.20.2
 # setuptools
 langchain-aws==0.1.17
 pdfminer-six
+opencv-python==4.5.5.64
