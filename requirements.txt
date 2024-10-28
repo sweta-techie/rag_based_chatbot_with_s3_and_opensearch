@@ -221,7 +221,7 @@ langcodes==3.4.1
     # via
     #   -r requirements.in
     #   spacy
-langsmith==0.0.92
+# langsmith==0.0.92
     # via langchain
 language-data==1.2.0
     # via
