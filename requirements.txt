@@ -696,7 +696,10 @@ zipp==3.20.2
 # setuptools
 easyocr
 pdfminer-six
-langchain-aws==0.1.17
-langchain==0.2.32
 # langchain-aws==0.1.17
+# langchain==0.2.32
+# langchain-aws==0.1.17
+langchain
+langchain-aws
+
 
