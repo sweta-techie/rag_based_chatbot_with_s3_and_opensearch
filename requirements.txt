@@ -703,6 +703,6 @@ faiss-cpu
 # streamlit
 easyocr
 pdfminer.six
-# Pillow
+# Pillow 
 # numpy
 # openai
