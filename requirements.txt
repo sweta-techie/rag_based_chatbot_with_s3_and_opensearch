@@ -699,7 +699,7 @@ zipp==3.20.2
 # setuptools
 # langchain==0.0.318
 langchain-aws>=0.1.17,<0.2.0  # Ensure this is the correct version or update as needed
-langchain-community==0.3.3
+# langchain-community==0.3.3
 faiss-cpu
 # boto3
 # streamlit
