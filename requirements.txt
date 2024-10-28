@@ -725,3 +725,4 @@ pdfminer-six
 # easyocr==1.7.2
 opencv-python-headless>=4.5.5,<5.
 langchain-community
+faiss-cpu
