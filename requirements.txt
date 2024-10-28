@@ -285,7 +285,7 @@ Werkzeug==3.0.3
 wrapt==1.16.0
 yarl==1.15.2
 yt-dlp==2024.10.7
-zipp>=3.10,<4.0.0
+zipp
 pdfminer.six==20230618
 
 
