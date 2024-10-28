@@ -539,3 +539,4 @@ zipp==3.20.2
 boto3==1.34.159
 pytesseract
 pdfminer.six 
+langchain_community
