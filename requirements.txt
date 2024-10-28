@@ -213,15 +213,13 @@ keybert==0.8.1
     # via -r requirements.in
 kiwisolver==1.4.7
     # via matplotlib
-langchain>=0.3.4,<0.4.0
-
+langchain==0.0.318
     # via -r requirements.in
 langcodes==3.4.1
     # via
     #   -r requirements.in
     #   spacy
-# langsmith>=0.1.125,<0.2.0
-
+langsmith==0.0.92
     # via langchain
 language-data==1.2.0
     # via
@@ -357,7 +355,7 @@ packaging==23.2
     #   thinc
     #   transformers
     #   visualdl
-paddleocr>=2.0.1
+paddleocr==2.7.0.0
     # via -r requirements.in
 pandas==2.0.0
     # via
@@ -411,9 +409,8 @@ pyclipper==1.3.0.post6
     # via paddleocr
 pycryptodome==3.21.0
     # via bce-python-sdk
-# pydantic
+# pydantic==1.10.18
     # via
-    #   -r requirements.in
     #   confection
     #   langchain
     #   langsmith
@@ -429,7 +426,7 @@ pygments==2.18.0
     #   rich
 pympler==1.1
     # via -r requirements.in
-PyMuPDF==1.21.1
+pymupdf==1.20.0
     # via
     #   -r requirements.in
     #   paddleocr
@@ -697,14 +694,3 @@ zipp==3.20.2
 
 # The following packages are considered to be unsafe in a requirements file:
 # setuptools
-# langchain==0.0.318
-langchain-aws>=0.1.17,<0.2.0  # Ensure this is the correct version or update as needed
-# langchain-community==0.3.3
-faiss-cpu
-# boto3
-# streamlit
-easyocr
-pdfminer.six
-# Pillow 
-# numpy
-# openai

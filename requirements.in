@@ -52,7 +52,7 @@ networkx==3.4.1
 nltk==3.8.1
 numexpr==2.10.1
 numpy>=1.20.0,<2.0.0  # Ensures compatibility with thinc and blis
-pydantic  # Use pydantic v1.x
+# pydantic  # Use pydantic v1.x
 openai==0.27.10
 packaging==23.2
 pandas==2.0.0
