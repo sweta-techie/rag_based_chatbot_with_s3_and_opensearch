@@ -119,7 +119,7 @@ def main():
         st.image(
             st.session_state['uploaded_file'],
             caption='Uploaded Image.',
-            width=400  # Set width to 400 pixels
+            width=600  # Set width to 400 pixels
         )
 
     if uploaded_file is not None:
