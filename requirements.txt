@@ -213,7 +213,8 @@ keybert==0.8.1
     # via -r requirements.in
 kiwisolver==1.4.7
     # via matplotlib
-langchain==0.0.318
+langchain>=0.3.4,<0.4.0
+
     # via -r requirements.in
 langcodes==3.4.1
     # via
@@ -696,7 +697,7 @@ zipp==3.20.2
 # The following packages are considered to be unsafe in a requirements file:
 # setuptools
 # langchain==0.0.318
-langchain-aws==0.1.17  # Ensure this is the correct version or update as needed
+langchain-aws>=0.1.17,<0.2.0  # Ensure this is the correct version or update as needed
 langchain-community==0.3.3
 faiss-cpu
 # boto3
