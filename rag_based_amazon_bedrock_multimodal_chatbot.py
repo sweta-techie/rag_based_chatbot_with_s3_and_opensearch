@@ -86,7 +86,7 @@ def process_uploaded_files(uploaded_file):
 
     if file_type in ["image/jpeg", "image/png", "image/jpg"]:
         st.session_state['uploaded_file'] = uploaded_file  # Store in session state
-        st.image(uploaded_file, caption='Uploaded Image.', width=400)  # Set width to 400 pixels
+        st.image(uploaded_file, caption='Uploaded Image.', width=600)  # Set width to 400 pixels
         st.write("Processing the image...")
         with st.spinner('Extracting text from the image...'):
             extracted_text = extract_text_from_image(file_bytes)
