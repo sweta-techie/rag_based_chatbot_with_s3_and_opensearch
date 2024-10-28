@@ -286,6 +286,7 @@ wrapt==1.16.0
 yarl==1.15.2
 yt-dlp==2024.10.7
 zipp
-pdfminer.six==20230618
+pdfminer.six==20231228
+
 
 
