@@ -122,3 +122,5 @@ boto3==1.34.159
 # OCR Library
 paddleocr==2.7.0.0
 pdf2docx==0.5.8
+easyocr
+opencv-python-headless

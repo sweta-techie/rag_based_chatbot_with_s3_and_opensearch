@@ -109,6 +109,8 @@ dataclasses-json==0.5.14
     # via
     #   -r requirements.in
     #   langchain
+easyocr==1.7.2
+    # via -r requirements.in
 et-xmlfile==2.0.0
     # via openpyxl
 exceptiongroup==1.2.2
@@ -213,13 +215,13 @@ keybert==0.8.1
     # via -r requirements.in
 kiwisolver==1.4.7
     # via matplotlib
-# langchain>=0.3.4,<0.4.0
+langchain==0.0.318
     # via -r requirements.in
 langcodes==3.4.1
     # via
     #   -r requirements.in
     #   spacy
-# langsmith==0.0.92
+langsmith==0.0.92
     # via langchain
 language-data==1.2.0
     # via
@@ -291,6 +293,8 @@ networkx==3.4.1
     #   -r requirements.in
     #   scikit-image
     #   torch
+ninja==1.11.1.1
+    # via easyocr
 nltk==3.8.1
     # via
     #   -r requirements.in
@@ -302,6 +306,7 @@ numpy==1.26.4
     #   -r requirements.in
     #   blis
     #   contourpy
+    #   easyocr
     #   imageio
     #   imgaug
     #   keybert
@@ -338,7 +343,10 @@ opencv-python==4.6.0.66
     #   imgaug
     #   paddleocr
 opencv-python-headless==4.10.0.84
-    # via pdf2docx
+    # via
+    #   -r requirements.in
+    #   easyocr
+    #   pdf2docx
 openpyxl==3.1.5
     # via paddleocr
 packaging==23.2
@@ -355,7 +363,7 @@ packaging==23.2
     #   thinc
     #   transformers
     #   visualdl
-paddleocr>=2.0.1
+paddleocr==2.7.0.0
     # via -r requirements.in
 pandas==2.0.0
     # via
@@ -375,6 +383,7 @@ pdf2docx==0.5.8
 pillow==10.4.0
     # via
     #   -r requirements.in
+    #   easyocr
     #   imageio
     #   imgaug
     #   matplotlib
@@ -406,7 +415,9 @@ pyarrow==17.0.0
     #   -r requirements.in
     #   streamlit
 pyclipper==1.3.0.post6
-    # via paddleocr
+    # via
+    #   easyocr
+    #   paddleocr
 pycryptodome==3.21.0
     # via bce-python-sdk
 # pydantic==1.10.18
@@ -426,13 +437,15 @@ pygments==2.18.0
     #   rich
 pympler==1.1
     # via -r requirements.in
-pymupdf==1.20.2
+pymupdf==1.20.0
     # via
     #   -r requirements.in
     #   paddleocr
     #   pdf2docx
 pyparsing==3.2.0
     # via matplotlib
+python-bidi==0.6.3
+    # via easyocr
 python-dateutil==2.9.0.post0
     # via
     #   -r requirements.in
@@ -455,6 +468,7 @@ pytz-deprecation-shim==0.1.0.post0
 pyyaml==6.0.2
     # via
     #   -r requirements.in
+    #   easyocr
     #   huggingface-hub
     #   langchain
     #   transformers
@@ -508,6 +522,7 @@ safetensors==0.4.5
     #   transformers
 scikit-image==0.24.0
     # via
+    #   easyocr
     #   imgaug
     #   paddleocr
 scikit-learn==1.2.2
@@ -518,6 +533,7 @@ scikit-learn==1.2.2
 scipy==1.14.1
     # via
     #   -r requirements.in
+    #   easyocr
     #   imgaug
     #   scikit-image
     #   scikit-learn
@@ -532,6 +548,7 @@ sentencepiece==0.2.0
     #   sentence-transformers
 shapely==2.0.6
     # via
+    #   easyocr
     #   imgaug
     #   paddleocr
 six==1.16.0
@@ -613,11 +630,13 @@ toml==0.10.2
 torch==2.0.1
     # via
     #   -r requirements.in
+    #   easyocr
     #   sentence-transformers
     #   torchvision
 torchvision==0.15.2
     # via
     #   -r requirements.in
+    #   easyocr
     #   sentence-transformers
 tornado==6.4.1
     # via
@@ -694,13 +713,5 @@ zipp==3.20.2
 
 # The following packages are considered to be unsafe in a requirements file:
 # setuptools
-easyocr==1.6.2
-opencv-python-headless==4.5.4.60
+langchain-aws==0.1.17
 pdfminer-six
-# langchain-aws==0.1.17
-# langchain==0.2.32
-# langchain-aws==0.1.17
-langchain
-langchain-aws
-
-
