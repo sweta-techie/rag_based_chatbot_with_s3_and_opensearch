@@ -223,7 +223,8 @@ langcodes==3.4.1
     #   spacy
 langchain-core==0.2.41  # or the latest compatible version
 langchain==0.0.340      # adjust to latest compatible version
-langsmith==0.2.0        # adjust to match above dependencies
+langsmith==0.1.112
+       # adjust to match above dependencies
 
     # via langchain
 language-data==1.2.0
