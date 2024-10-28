@@ -696,8 +696,8 @@ zipp==3.20.2
 # The following packages are considered to be unsafe in a requirements file:
 # setuptools
 # langchain==0.0.318
-langchain-aws==0.0.0  # Ensure this is the correct version or update as needed
-langchain-community==0.0.15
+langchain-aws==0.1.17  # Ensure this is the correct version or update as needed
+langchain-community==0.3.3
 faiss-cpu
 # boto3
 # streamlit
