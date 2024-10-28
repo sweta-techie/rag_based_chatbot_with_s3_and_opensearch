@@ -28,23 +28,39 @@ async-timeout==4.0.3
     #   -r requirements.in
     #   aiohttp
     #   langchain
+attrdict==2.0.1
+    # via paddleocr
 attrs==24.2.0
     # via
     #   -r requirements.in
     #   aiohttp
     #   jsonschema
     #   referencing
+babel==2.16.0
+    # via flask-babel
+bce-python-sdk==0.9.23
+    # via visualdl
+beautifulsoup4==4.12.3
+    # via paddleocr
 blinker==1.8.2
     # via
     #   -r requirements.in
+    #   flask
     #   streamlit
-blis==0.7.11
+blis==0.7.9
     # via
     #   -r requirements.in
     #   thinc
+boto3==1.34.159
+    # via -r requirements.in
+botocore==1.34.162
+    # via
+    #   boto3
+    #   s3transfer
 cachetools==5.5.0
     # via
     #   -r requirements.in
+    #   premailer
     #   streamlit
 catalogue==2.0.10
     # via
@@ -63,13 +79,22 @@ charset-normalizer==3.4.0
 click==8.1.7
     # via
     #   -r requirements.in
+    #   flask
     #   nltk
     #   streamlit
     #   typer
-confection==0.1.5
+confection==0.0.4
     # via
     #   -r requirements.in
     #   thinc
+contourpy==1.3.0
+    # via matplotlib
+cssselect==1.2.0
+    # via premailer
+cssutils==2.11.1
+    # via premailer
+cycler==0.12.1
+    # via matplotlib
 cymem==2.0.8
     # via
     #   -r requirements.in
@@ -77,11 +102,15 @@ cymem==2.0.8
     #   spacy
     #   thinc
 cython==0.29.36
-    # via -r requirements.in
-dataclasses-json==0.6.7
+    # via
+    #   -r requirements.in
+    #   paddleocr
+dataclasses-json==0.5.14
     # via
     #   -r requirements.in
     #   langchain
+et-xmlfile==2.0.0
+    # via openpyxl
 exceptiongroup==1.2.2
     # via
     #   -r requirements.in
@@ -92,6 +121,21 @@ filelock==3.16.1
     #   huggingface-hub
     #   torch
     #   transformers
+fire==0.7.0
+    # via
+    #   paddleocr
+    #   pdf2docx
+flask==3.0.3
+    # via
+    #   flask-babel
+    #   visualdl
+flask-babel==4.0.0
+    # via visualdl
+fonttools==4.54.1
+    # via
+    #   matplotlib
+    #   paddleocr
+    #   pdf2docx
 frozenlist==1.4.1
     # via
     #   -r requirements.in
@@ -101,6 +145,8 @@ fsspec==2024.10.0
     # via
     #   -r requirements.in
     #   huggingface-hub
+future==1.0.0
+    # via bce-python-sdk
 gitdb==4.0.11
     # via
     #   -r requirements.in
@@ -121,15 +167,27 @@ idna==3.10
     #   anyio
     #   requests
     #   yarl
-importlib-metadata
-    # via streamlit
+imageio==2.36.0
+    # via
+    #   imgaug
+    #   scikit-image
+imgaug==0.4.0
+    # via paddleocr
+itsdangerous==2.2.0
+    # via flask
 jinja2==3.1.4
     # via
     #   -r requirements.in
     #   altair
+    #   flask
+    #   flask-babel
     #   pydeck
     #   spacy
     #   torch
+jmespath==1.0.1
+    # via
+    #   boto3
+    #   botocore
 joblib==1.4.2
     # via
     #   -r requirements.in
@@ -153,22 +211,31 @@ jsonschema-specifications==2024.10.1
     #   jsonschema
 keybert==0.8.1
     # via -r requirements.in
-langchain==0.0.305
+kiwisolver==1.4.7
+    # via matplotlib
+langchain==0.0.318
     # via -r requirements.in
 langcodes==3.4.1
     # via
     #   -r requirements.in
     #   spacy
 langsmith==0.0.92
-    # via
-    #   -r requirements.in
-    #   langchain
+    # via langchain
 language-data==1.2.0
     # via
     #   -r requirements.in
     #   langcodes
 language-tool-python==2.7.1
     # via -r requirements.in
+lazy-loader==0.4
+    # via scikit-image
+lmdb==1.5.1
+    # via paddleocr
+lxml==5.3.0
+    # via
+    #   paddleocr
+    #   premailer
+    #   python-docx
 marisa-trie==1.2.1
     # via
     #   -r requirements.in
@@ -181,14 +248,21 @@ markupsafe==3.0.2
     # via
     #   -r requirements.in
     #   jinja2
+    #   werkzeug
 marshmallow==3.23.0
     # via
     #   -r requirements.in
     #   dataclasses-json
+matplotlib==3.9.2
+    # via
+    #   imgaug
+    #   visualdl
 mdurl==0.1.2
     # via
     #   -r requirements.in
     #   markdown-it-py
+more-itertools==10.5.0
+    # via cssutils
 mpmath==1.3.0
     # via
     #   -r requirements.in
@@ -215,61 +289,102 @@ narwhals==1.9.4
 networkx==3.4.1
     # via
     #   -r requirements.in
+    #   scikit-image
     #   torch
 nltk==3.8.1
     # via
     #   -r requirements.in
     #   sentence-transformers
 numexpr==2.10.1
-    # via
-    #   -r requirements.in
-    #   langchain
-numpy>=1.26.4,<2.0.0
+    # via -r requirements.in
+numpy==1.26.4
     # via
     #   -r requirements.in
     #   blis
+    #   contourpy
+    #   imageio
+    #   imgaug
     #   keybert
     #   langchain
+    #   matplotlib
     #   numexpr
+    #   opencv-contrib-python
+    #   opencv-python
+    #   opencv-python-headless
+    #   paddleocr
     #   pandas
+    #   pdf2docx
     #   pyarrow
     #   pydeck
     #   rank-bm25
+    #   scikit-image
     #   scikit-learn
     #   scipy
     #   sentence-transformers
+    #   shapely
     #   spacy
     #   streamlit
     #   thinc
+    #   tifffile
     #   torchvision
     #   transformers
+    #   visualdl
 openai==0.27.10
     # via -r requirements.in
-packaging
+opencv-contrib-python==4.6.0.66
+    # via paddleocr
+opencv-python==4.6.0.66
+    # via
+    #   imgaug
+    #   paddleocr
+opencv-python-headless==4.10.0.84
+    # via pdf2docx
+openpyxl==3.1.5
+    # via paddleocr
+packaging==23.2
     # via
     #   -r requirements.in
     #   altair
     #   huggingface-hub
+    #   lazy-loader
     #   marshmallow
+    #   matplotlib
+    #   scikit-image
     #   spacy
     #   streamlit
     #   thinc
     #   transformers
+    #   visualdl
+paddleocr>=2.0.1
+    # via -r requirements.in
 pandas==2.0.0
     # via
     #   -r requirements.in
     #   streamlit
+    #   visualdl
 pathlib-abc==0.1.1
     # via pathy
 pathy==0.11.0
     # via
     #   -r requirements.in
     #   spacy
-pillow==9.5.0
+pdf2docx==0.5.8
     # via
     #   -r requirements.in
+    #   paddleocr
+pillow==10.4.0
+    # via
+    #   -r requirements.in
+    #   imageio
+    #   imgaug
+    #   matplotlib
+    #   paddleocr
+    #   scikit-image
     #   streamlit
     #   torchvision
+    #   visualdl
+premailer==3.10.0
+    # via paddleocr
 preshed==3.0.9
     # via
     #   -r requirements.in
@@ -283,10 +398,17 @@ protobuf==4.25.5
     # via
     #   -r requirements.in
     #   streamlit
+    #   visualdl
+psutil==6.1.0
+    # via visualdl
 pyarrow==17.0.0
     # via
     #   -r requirements.in
     #   streamlit
+pyclipper==1.3.0.post6
+    # via paddleocr
+pycryptodome==3.21.0
+    # via bce-python-sdk
 pydantic==1.10.18
     # via
     #   -r requirements.in
@@ -304,23 +426,28 @@ pygments==2.18.0
     #   -r requirements.in
     #   rich
 pympler==1.1
-    # via
-    #   -r requirements.in
-    #   streamlit
-pymupdf==1.23.7
     # via -r requirements.in
-pymupdfb==1.23.7
+PyMuPDF==1.21.1
     # via
     #   -r requirements.in
-    #   pymupdf
+    #   paddleocr
+    #   pdf2docx
+pyparsing==3.2.0
+    # via matplotlib
 python-dateutil==2.9.0.post0
     # via
     #   -r requirements.in
+    #   botocore
+    #   matplotlib
     #   pandas
-    #   streamlit
+python-docx==1.1.2
+    # via
+    #   paddleocr
+    #   pdf2docx
 pytz==2024.2
     # via
     #   -r requirements.in
+    #   flask-babel
     #   pandas
 pytz-deprecation-shim==0.1.0.post0
     # via
@@ -334,6 +461,10 @@ pyyaml==6.0.2
     #   transformers
 rank-bm25==0.2.2
     # via -r requirements.in
+rapidfuzz==3.10.1
+    # via paddleocr
+rarfile==4.2
+    # via visualdl
 referencing==0.35.1
     # via
     #   -r requirements.in
@@ -352,10 +483,12 @@ requests==2.32.3
     #   langsmith
     #   language-tool-python
     #   openai
+    #   premailer
     #   spacy
     #   streamlit
     #   torchvision
     #   transformers
+    #   visualdl
 rich==13.9.2
     # via
     #   -r requirements.in
@@ -366,10 +499,18 @@ rpds-py==0.20.0
     #   -r requirements.in
     #   jsonschema
     #   referencing
+s3transfer==0.10.3
+    # via
+    #   -r requirements.in
+    #   boto3
 safetensors==0.4.5
     # via
     #   -r requirements.in
     #   transformers
+scikit-image==0.24.0
+    # via
+    #   imgaug
+    #   paddleocr
 scikit-learn==1.2.2
     # via
     #   -r requirements.in
@@ -378,6 +519,8 @@ scikit-learn==1.2.2
 scipy==1.14.1
     # via
     #   -r requirements.in
+    #   imgaug
+    #   scikit-image
     #   scikit-learn
     #   sentence-transformers
 sentence-transformers==2.2.2
@@ -388,10 +531,18 @@ sentencepiece==0.2.0
     # via
     #   -r requirements.in
     #   sentence-transformers
+shapely==2.0.6
+    # via
+    #   imgaug
+    #   paddleocr
 six==1.16.0
     # via
     #   -r requirements.in
+    #   attrdict
+    #   bce-python-sdk
+    #   imgaug
     #   python-dateutil
+    #   visualdl
 smart-open==6.4.0
     # via
     #   -r requirements.in
@@ -405,7 +556,11 @@ sniffio==1.3.1
     # via
     #   -r requirements.in
     #   anyio
-spacy==3.6.0
+soupsieve==2.6
+    # via
+    #   -r requirements.in
+    #   beautifulsoup4
+spacy==3.5.3
     # via -r requirements.in
 spacy-legacy==3.0.12
     # via
@@ -425,7 +580,7 @@ srsly==2.4.8
     #   confection
     #   spacy
     #   thinc
-streamlit==1.25.0
+streamlit==1.39.0
     # via -r requirements.in
 sympy==1.13.1
     # via
@@ -436,6 +591,8 @@ tenacity==8.5.0
     #   -r requirements.in
     #   langchain
     #   streamlit
+termcolor==2.5.0
+    # via fire
 thinc==8.1.10
     # via
     #   -r requirements.in
@@ -444,6 +601,8 @@ threadpoolctl==3.5.0
     # via
     #   -r requirements.in
     #   scikit-learn
+tifffile==2024.9.20
+    # via scikit-image
 tokenizers==0.14.1
     # via
     #   -r requirements.in
@@ -472,6 +631,7 @@ tqdm==4.66.5
     #   language-tool-python
     #   nltk
     #   openai
+    #   paddleocr
     #   sentence-transformers
     #   spacy
     #   transformers
@@ -479,7 +639,7 @@ transformers==4.34.0
     # via
     #   -r requirements.in
     #   sentence-transformers
-typer==0.9.4
+typer==0.4.2
     # via
     #   -r requirements.in
     #   pathy
@@ -491,11 +651,11 @@ typing-extensions==4.12.2
     #   huggingface-hub
     #   multidict
     #   pydantic
+    #   python-docx
     #   rich
     #   sqlalchemy
     #   streamlit
     #   torch
-    #   typer
     #   typing-inspect
 typing-inspect==0.9.0
     # via
@@ -507,22 +667,23 @@ tzdata==2024.2
     #   pandas
     #   pytz-deprecation-shim
 tzlocal==4.3.1
-    # via
-    #   -r requirements.in
-    #   streamlit
+    # via -r requirements.in
 urllib3==2.2.3
     # via
     #   -r requirements.in
+    #   botocore
     #   requests
 validators==0.34.0
-    # via
-    #   -r requirements.in
-    #   streamlit
+    # via -r requirements.in
+visualdl==2.5.3
+    # via paddleocr
 wasabi==1.1.3
     # via
     #   -r requirements.in
     #   spacy
     #   thinc
+werkzeug==3.0.6
+    # via flask
 wheel==0.44.0
     # via -r requirements.in
 yarl==1.15.5
@@ -530,13 +691,10 @@ yarl==1.15.5
     #   -r requirements.in
     #   aiohttp
 zipp==3.20.2
-    # via
-    #   -r requirements.in
-    #   importlib-metadata
+    # via -r requirements.in
 
 # The following packages are considered to be unsafe in a requirements file:
 # setuptools
-boto3==1.34.159
-pytesseract
-pdfminer.six 
+easyocr
+pdfminer.six
 langchain_community

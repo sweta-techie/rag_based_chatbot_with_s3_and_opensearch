@@ -1,17 +1,27 @@
 import boto3
-import json
+from langchain_community.llms import Bedrock
 
-# Initialize the Bedrock client
-bedrock = boto3.client('bedrock', region_name='us-east-1')  # Replace 'us-east-1' with your region if different
-
-def list_models():
-    response = bedrock.list_foundation_models()
-    models = response.get('modelSummaries', [])
-    for model in models:
-        print(f"Model ID: {model['modelId']}")
-        print(f"Model Name: {model['modelName']}")
-        print(f"Provider: {model['providerName']}")
-        print("---")
+def test_bedrock():
+    try:
+        # Initialize the Bedrock client
+        bedrock_client = boto3.client(service_name="bedrock-runtime", region_name="us-east-1")
+        
+        # Initialize the Bedrock LLM
+        llm = Bedrock(
+            model_id="amazon.titan-text-express-v1",
+            client=bedrock_client,
+            model_kwargs={
+                'maxTokenCount': 512,
+                'temperature': 0.5,
+                'topP': 0.9
+            }
+        )
+        
+        # Test the LLM with a simple prompt
+        response = llm("What is the capital of France?")
+        print("Bedrock LLM Response:", response)
+    except Exception as e:
+        print("Error with Bedrock LLM:", e)
 
 if __name__ == "__main__":
-    list_models()
+    test_bedrock()

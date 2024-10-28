@@ -4,19 +4,21 @@ import boto3
 import json
 import logging
 from PIL import Image
-import pytesseract
-pytesseract.pytesseract.tesseract_cmd = '/opt/homebrew/bin/tesseract'
+import easyocr
+import numpy as np  # Import NumPy
 from io import BytesIO
 from pdfminer.high_level import extract_text
-from langchain_community.embeddings import BedrockEmbeddings
-from langchain_community.llms import Bedrock
+from langchain.vectorstores import FAISS  # Correct FAISS import
+from langchain_aws import BedrockLLM  # Updated Bedrock import
+from langchain_aws.embeddings import BedrockEmbeddings  # Updated Embeddings import
 from langchain.prompts import PromptTemplate
 from langchain.chains import RetrievalQA
-# from langchain_community.vectorstores import FAISS
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from tempfile import NamedTemporaryFile
 
-
+# Optional: Suppress FAISS warnings (use with caution)
+# import warnings
+# warnings.filterwarnings("ignore", category=UserWarning, module='langchain.vectorstores.faiss')
 
 # Configure the page layout to "wide"
 st.set_page_config(layout="wide")
@@ -26,7 +28,24 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 # Initialize the Bedrock client
-bedrock = boto3.client(service_name="bedrock-runtime", region_name="us-east-1")
+try:
+    bedrock_client = boto3.client(service_name="bedrock-runtime", region_name="us-east-1")
+except Exception as e:
+    logger.error(f"Error initializing Bedrock client: {str(e)}")
+    st.error("Failed to initialize Bedrock client. Please check your AWS credentials and network connection.")
+    st.stop()
+
+# Initialize the EasyOCR Reader once and cache it
+@st.cache_resource
+def initialize_reader():
+    try:
+        return easyocr.Reader(['en'])  # Add other languages if needed
+    except Exception as e:
+        logger.error(f"Error initializing EasyOCR Reader: {str(e)}")
+        st.error("Failed to initialize EasyOCR Reader.")
+        st.stop()
+
+reader = initialize_reader()
 
 # Function to inject local CSS
 def local_css(css):
@@ -41,14 +60,24 @@ local_css('''
 }
 ''')
 
-# Function to extract text from images using pytesseract
+# Function to extract text from images using easyocr
 def extract_text_from_image(image_bytes):
     try:
-        image = Image.open(BytesIO(image_bytes))
-        extracted_text = pytesseract.image_to_string(image)
+        # Open the image and convert to RGB
+        image = Image.open(BytesIO(image_bytes)).convert('RGB')
+        
+        # Convert PIL Image to NumPy array
+        image_np = np.array(image)
+        
+        # Use EasyOCR to read text from the image
+        results = reader.readtext(image_np)
+        
+        # Extract and concatenate the text from the results
+        extracted_text = "\n".join([result[1] for result in results])
         return extracted_text
     except Exception as e:
         logger.error(f"Error extracting text from image: {str(e)}")
+        st.error("An error occurred while extracting text from the image.")
         return ""
 
 # Function to extract text from PDFs using pdfminer.six
@@ -62,6 +91,7 @@ def extract_text_from_pdf(pdf_bytes):
         return text
     except Exception as e:
         logger.error(f"Error extracting text from PDF: {str(e)}")
+        st.error("An error occurred while extracting text from the PDF.")
         return ""
 
 # Function to process uploaded files (images or PDFs)
@@ -115,15 +145,28 @@ def main():
         docs = text_splitter.create_documents([extracted_text])
 
         # Initialize Bedrock embeddings
-        bedrock_embeddings = BedrockEmbeddings(
-            model_id="amazon.titan-embed-text-v1", client=bedrock
-        )
+        try:
+            bedrock_embeddings = BedrockEmbeddings(
+                model_id="amazon.titan-embed-text-v1",
+                client=bedrock_client
+            )
+        except Exception as e:
+            logger.error(f"Error initializing Bedrock Embeddings: {str(e)}")
+            st.error("Failed to initialize Bedrock Embeddings.")
+            return
 
-        # Create vector store
-        # vectorstore = FAISS.from_documents(
-        #     docs,
-        #     bedrock_embeddings
-        # )
+        # Create FAISS vector store and cache it
+        if 'vectorstore' not in st.session_state:
+            try:
+                st.session_state['vectorstore'] = FAISS.from_documents(
+                    docs,
+                    bedrock_embeddings
+                )
+            except Exception as e:
+                logger.error(f"Error creating FAISS vector store: {str(e)}")
+                st.error("Failed to create vector store.")
+                return
+        retriever = st.session_state['vectorstore'].as_retriever(search_type="similarity", search_kwargs={"k": 3})
 
         # Define the prompt template
         prompt_template = """
@@ -141,24 +184,24 @@ def main():
             template=prompt_template, input_variables=["context", "question"]
         )
 
-        # Initialize the LLM
-        llm = Bedrock(
-            model_id="amazon.titan-text-express-v1",
-            client=bedrock,
-            model_kwargs={
-                'maxTokenCount': 512,
-                'temperature': 0.5,
-                'topP': 0.9
-            }
-        )
+        # Initialize the BedrockLLM
+        try:
+            llm = BedrockLLM(
+                model_id="amazon.titan-text-express-v1",  # Ensure this model ID is correct and available
+                client=bedrock_client,
+                model_kwargs={
+                    'maxTokenCount': 512,
+                    'temperature': 0.5,
+                    'topP': 0.9
+                }
+            )
+        except Exception as e:
+            logger.error(f"Error initializing BedrockLLM: {str(e)}")
+            st.error("Failed to initialize the language model.")
+            return
 
-        with st.form(key='question_form', clear_on_submit=True):
-            st.write("You can now ask questions about the extracted text.")
-            user_input = st.text_input("Your question:")
-            submit_button = st.form_submit_button(label='Submit')
-
-        if submit_button and user_input:
-            retriever = vectorstore.as_retriever(search_type="similarity", search_kwargs={"k": 3})
+        # Initialize the RetrievalQA chain
+        try:
             qa = RetrievalQA.from_chain_type(
                 llm=llm,
                 chain_type="stuff",
@@ -166,14 +209,25 @@ def main():
                 return_source_documents=True,
                 chain_type_kwargs={"prompt": PROMPT}
             )
+        except Exception as e:
+            logger.error(f"Error initializing RetrievalQA chain: {str(e)}")
+            st.error("An error occurred while setting up the QA system.")
+            return
 
+        with st.form(key='question_form', clear_on_submit=True):
+            st.write("You can now ask questions about the extracted text.")
+            user_input = st.text_input("Your question:")
+            submit_button = st.form_submit_button(label='Submit')
+
+        if submit_button and user_input:
             with st.spinner('Generating response...'):
                 try:
                     answer = qa({"query": user_input})
                     response = answer['result']
                     st.session_state.chat_history.append({"question": user_input, "answer": response})
                 except Exception as e:
-                    st.error(f"Failed to generate a response: {str(e)}")
+                    logger.error(f"Failed to generate a response: {str(e)}")
+                    st.error("Failed to generate a response. Please try again.")
 
         if st.session_state.get('chat_history'):
             st.write("### Chat History")
