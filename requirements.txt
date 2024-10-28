@@ -51,7 +51,7 @@ docstring_parser==0.16
 durationpy==0.9
 en_core_web_sm @ https://github.com/explosion/spacy-models/releases/download/en_core_web_sm-3.8.0/en_core_web_sm-3.8.0-py3-none-any.whl#sha256=1932429db727d4bff3deed6b34cfc05df17794f4a52eeb26cf8928f7c1a0fb85
 executing==2.0.1
-faiss-cpu==1.9.0
+# faiss-cpu==1.9.0
 fastapi==0.115.2
 fastjsonschema==2.20.0
 filelock==3.16.1
@@ -146,7 +146,7 @@ networkx==3.4.1
 nltk==3.9.1
 notebook==7.2.2
 notebook_shim==0.2.4
-numpy==1.26.4
+numpy>=1.26.4,<3.0.0
 oauthlib==3.2.2
 onnxruntime==1.19.2
 openai==1.51.2
@@ -286,5 +286,6 @@ wrapt==1.16.0
 yarl==1.15.2
 yt-dlp==2024.10.7
 zipp==3.20.2
-pdfminer.six
+pdfminer.six==20230618
+
 
