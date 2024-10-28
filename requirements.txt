@@ -349,7 +349,7 @@ opencv-python==4.6.0.66
     # via
     #   imgaug
     #   paddleocr
-opencv-python-headless==4.10.0.84
+# opencv-python-headless==4.10.0.84
     # via
     #   -r requirements.in
     #   easyocr
