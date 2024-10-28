@@ -215,13 +215,16 @@ keybert==0.8.1
     # via -r requirements.in
 kiwisolver==1.4.7
     # via matplotlib
-langchain==0.0.318
+# langchain==0.0.318
     # via -r requirements.in
 langcodes==3.4.1
     # via
     #   -r requirements.in
     #   spacy
-# langsmith==0.0.92
+langchain-core==0.2.41  # or the latest compatible version
+langchain==0.0.340      # adjust to latest compatible version
+langsmith==0.2.0        # adjust to match above dependencies
+
     # via langchain
 language-data==1.2.0
     # via
