@@ -221,9 +221,12 @@ langcodes==3.4.1
     # via
     #   -r requirements.in
     #   spacy
-# langchain-core==0.2.33  # or the latest compatible version
-langchain==0.0.318      # adjust to latest compatible version
-# langsmith==0.1.112
+langchain-core>=0.2.41
+  # or the latest compatible version
+langchain>=0.0.320
+     # adjust to latest compatible version
+langsmith>=0.1.112,<0.2.0
+
        # adjust to match above dependencies
 
     # via langchain
