@@ -1,27 +1,39 @@
 import os
-import streamlit as st
-import boto3
+import time
+import hashlib
 import logging
-from PIL import Image
-import easyocr
+import boto3
+import botocore.exceptions
+import streamlit as st
 import numpy as np
 from io import BytesIO
+from tempfile import NamedTemporaryFile
+from PIL import Image
+import easyocr
 from pdfminer.high_level import extract_text
+from tenacity import (
+    retry,
+    stop_after_attempt,
+    wait_random_exponential,
+    retry_if_exception_type
+)
+from functools import wraps
+
+# Updated import statements
 from langchain_community.vectorstores import FAISS
-from langchain_aws import BedrockLLM
-from langchain_aws.embeddings import BedrockEmbeddings
+from langchain.docstore.document import Document
 from langchain.prompts import PromptTemplate
 from langchain.chains import RetrievalQA
-from langchain.text_splitter import RecursiveCharacterTextSplitter
-from tempfile import NamedTemporaryFile
-import hashlib
+from langchain.text_splitters import RecursiveCharacterTextSplitter
+from langchain_aws.embeddings import BedrockEmbeddings
+from langchain_aws.llms.bedrock import BedrockLLM
 
 # Set up Streamlit and logging configurations
 st.set_page_config(layout="wide")
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-# Initialize the Bedrock client
+# Initialize AWS Bedrock client
 try:
     bedrock_client = boto3.client(service_name="bedrock-runtime", region_name="us-east-1")
 except Exception as e:
@@ -86,7 +98,7 @@ def process_uploaded_files(uploaded_file):
 
     if file_type in ["image/jpeg", "image/png", "image/jpg"]:
         st.session_state['uploaded_file'] = uploaded_file  # Store in session state
-        st.image(uploaded_file, caption='Uploaded Image.', width=600)  # Set width to 400 pixels
+        st.image(uploaded_file, caption='Uploaded Image.', width=400)  # Set width to 400 pixels
         st.write("Processing the image...")
         with st.spinner('Extracting text from the image...'):
             extracted_text = extract_text_from_image(file_bytes)
@@ -106,10 +118,95 @@ def process_uploaded_files(uploaded_file):
     st.success("Text extracted from the file.")
     return extracted_text
 
+# Caching Bedrock Embeddings
+@st.cache_resource
+def get_bedrock_embeddings():
+    try:
+        bedrock_embeddings = BedrockEmbeddings(
+            client=bedrock_client,
+            model_id="amazon.titan-embed-text-v1"
+        )
+        return bedrock_embeddings
+    except Exception as e:
+        logger.error(f"Error initializing Bedrock Embeddings: {str(e)}")
+        st.error("Failed to initialize Bedrock Embeddings.")
+        st.stop()
+
+bedrock_embeddings = get_bedrock_embeddings()
+
+# Caching Bedrock LLM
+@st.cache_resource
+def get_bedrock_llm():
+    try:
+        llm = BedrockLLM(
+            client=bedrock_client,
+            model_id="amazon.titan-tg1-large",  # Updated model ID
+            model_kwargs={
+                'maxTokenCount': 1024,
+                'temperature': 0.7,
+                'topP': 0.9
+            }
+        )
+        return llm
+    except Exception as e:
+        logger.error(f"Error initializing Bedrock LLM: {str(e)}")
+        st.error("Failed to initialize Bedrock LLM.")
+        st.stop()
+
+# Adjusted rate limit values
+CALLS = 1  # Maximum number of calls per period
+PERIOD = 1  # Time period in seconds
+
+def rate_limiter(max_calls, period):
+    min_interval = period / max_calls
+    def decorator(func):
+        last_time_called = [0.0]
+        @wraps(func)
+        def wrapper(*args, **kwargs):
+            elapsed = time.time() - last_time_called[0]
+            if elapsed < min_interval:
+                time_to_wait = min_interval - elapsed
+                logger.info(f"Rate limiter active. Sleeping for {time_to_wait} seconds.")
+                time.sleep(time_to_wait)
+            last_time_called[0] = time.time()
+            return func(*args, **kwargs)
+        return wrapper
+    return decorator
+
+@retry(
+    reraise=True,
+    stop=stop_after_attempt(5),
+    wait=wait_random_exponential(multiplier=2, min=5, max=60),
+    retry=retry_if_exception_type(botocore.exceptions.ClientError)
+)
+@rate_limiter(max_calls=CALLS, period=PERIOD)
+def invoke_bedrock_model_with_retry(qa_chain, user_query):
+    st.session_state['llm_requests'] += 1
+    logger.info(f"LLM requests made: {st.session_state['llm_requests']}")
+    return qa_chain.invoke({"query": user_query})
+
+@retry(
+    reraise=True,
+    stop=stop_after_attempt(5),
+    wait=wait_random_exponential(multiplier=2, min=5, max=60),
+    retry=retry_if_exception_type(botocore.exceptions.ClientError)
+)
+@rate_limiter(max_calls=CALLS, period=PERIOD)
+def invoke_llm_with_retry(llm, user_query):
+    st.session_state['llm_requests'] += 1
+    logger.info(f"LLM requests made: {st.session_state['llm_requests']}")
+    return llm.invoke(user_query)
+
 def main():
     st.title("Multimodal Chatbot with Image and PDF Support")
     st.write("Upload an image or PDF containing text and ask questions about it or any general knowledge question.")
     uploaded_file = st.file_uploader("Choose an image or PDF...", type=["jpg", "jpeg", "png", "pdf"])
+
+    # Initialize request counters
+    if 'embedding_requests' not in st.session_state:
+        st.session_state['embedding_requests'] = 0
+    if 'llm_requests' not in st.session_state:
+        st.session_state['llm_requests'] = 0
 
     if 'chat_history' not in st.session_state:
         st.session_state['chat_history'] = []
@@ -119,7 +216,7 @@ def main():
         st.image(
             st.session_state['uploaded_file'],
             caption='Uploaded Image.',
-            width=600  # Set width to 400 pixels
+            width=400  # Set width to 400 pixels
         )
 
     if uploaded_file is not None:
@@ -134,32 +231,27 @@ def main():
 
             st.session_state['extracted_text'] = extracted_text
 
+            # Adjusted text splitter parameters to reduce the number of chunks
             text_splitter = RecursiveCharacterTextSplitter(
-                chunk_size=1000,
-                chunk_overlap=200
+                chunk_size=2000,  # Increased chunk size
+                chunk_overlap=100  # Decreased overlap
             )
             docs = text_splitter.create_documents([extracted_text])
 
             try:
-                bedrock_embeddings = BedrockEmbeddings(
-                    model_id="amazon.titan-embed-text-v1",
-                    client=bedrock_client
-                )
-                st.session_state['bedrock_embeddings'] = bedrock_embeddings
-            except Exception as e:
-                logger.error(f"Error initializing Bedrock Embeddings: {str(e)}")
-                st.error("Failed to initialize Bedrock Embeddings.")
-                return
-
-            try:
+                # Create vectorstore using from_documents
                 vectorstore = FAISS.from_documents(
-                    docs,
-                    st.session_state['bedrock_embeddings']
+                    documents=docs,
+                    embedding=bedrock_embeddings
                 )
                 st.session_state['vectorstore'] = vectorstore
+            except botocore.exceptions.ClientError as e:
+                logger.error(f"Error generating embeddings: {str(e)}")
+                st.error("Failed to generate embeddings due to service throttling. Please try again later.")
+                return
             except Exception as e:
-                logger.error(f"Error creating FAISS vector store: {str(e)}")
-                st.error("Failed to create vector store.")
+                logger.error(f"Unexpected error during embeddings generation: {str(e)}")
+                st.error("An unexpected error occurred during embeddings generation. Please try again.")
                 return
 
             # Adjust retriever to improve relevance
@@ -188,21 +280,8 @@ Answer:
             )
             st.session_state['prompt'] = PROMPT
 
-            try:
-                llm = BedrockLLM(
-                    model_id="amazon.titan-text-express-v1",
-                    client=bedrock_client,
-                    model_kwargs={
-                        'maxTokenCount': 1024,
-                        'temperature': 0.7,
-                        'topP': 0.9
-                    }
-                )
-                st.session_state['llm'] = llm
-            except Exception as e:
-                logger.error(f"Error initializing BedrockLLM: {str(e)}")
-                st.error("Failed to initialize the language model.")
-                return
+            # Get cached LLM
+            st.session_state['llm'] = get_bedrock_llm()
 
             try:
                 qa = RetrievalQA.from_chain_type(
@@ -213,9 +292,19 @@ Answer:
                     chain_type_kwargs={"prompt": st.session_state['prompt']}
                 )
                 st.session_state['qa'] = qa
+            except botocore.exceptions.ClientError as e:
+                logger.error(f"Bedrock ClientError during QA chain initialization: {str(e)}")
+                error_code = e.response['Error']['Code']
+                if error_code == 'ThrottlingException':
+                    st.error("Service is currently busy. Please wait a moment and try again.")
+                elif error_code == 'ValidationException':
+                    st.error("Invalid model identifier provided in QA chain. Please verify the model name and try again.")
+                else:
+                    st.error("An error occurred while setting up the QA system. Please try again later.")
+                return
             except Exception as e:
-                logger.error(f"Error initializing RetrievalQA chain: {str(e)}")
-                st.error("An error occurred while setting up the QA system.")
+                logger.error(f"Unexpected error during QA chain initialization: {str(e)}")
+                st.error("An unexpected error occurred while setting up the QA system. Please try again.")
                 return
         else:
             extracted_text = st.session_state.get('extracted_text', '')
@@ -224,6 +313,12 @@ Answer:
                 st.error("QA system is not initialized.")
                 return
 
+    # Initialize last request time for debouncing
+    if 'last_request_time' not in st.session_state:
+        st.session_state['last_request_time'] = 0
+
+    REQUEST_COOLDOWN = 5  # seconds
+
     if 'qa' in st.session_state:
         with st.form(key='question_form', clear_on_submit=True):
             st.write("You can now ask questions about the extracted text or any general knowledge question.")
@@ -231,24 +326,39 @@ Answer:
             submit_button = st.form_submit_button(label='Submit')
 
         if submit_button and user_input:
-            with st.spinner('Generating response...'):
-                try:
-                    response = st.session_state['qa'].invoke({"query": user_input})
-                    answer = response['result']
-                    # Check if the answer indicates the model doesn't know
-                    if "I don't know" in answer or "cannot find sufficient information" in answer.lower():
-                        # Use LLM directly without context
-                        answer = st.session_state['llm'](user_input)
-                    st.session_state.chat_history.append({"question": user_input, "answer": answer})
-                except Exception as e:
-                    logger.error(f"Failed to generate a response: {str(e)}")
-                    st.error("Failed to generate a response. Please try again.")
+            current_time = time.time()
+            if current_time - st.session_state.get('last_request_time', 0) < REQUEST_COOLDOWN:
+                st.warning(f"Please wait {int(REQUEST_COOLDOWN - (current_time - st.session_state.get('last_request_time', 0)))} seconds before submitting another request.")
+            else:
+                st.session_state['last_request_time'] = current_time
+                with st.spinner('Generating response...'):
+                    try:
+                        # Invoke Bedrock model with rate limiting and retry
+                        response = invoke_bedrock_model_with_retry(st.session_state['qa'], user_input)
+                        answer = response['result']
+                        # Check if the answer indicates the model doesn't know
+                        if "I don't know" in answer or "cannot find sufficient information" in answer.lower():
+                            # Use LLM directly without context
+                            answer = invoke_llm_with_retry(st.session_state['llm'], user_input)
+                        st.session_state.chat_history.append({"question": user_input, "answer": answer})
+                    except botocore.exceptions.ClientError as e:
+                        error_code = e.response['Error']['Code']
+                        if error_code == 'ThrottlingException':
+                            st.error("Service is currently busy due to high demand. Please wait a moment and try again.")
+                        elif error_code == 'ValidationException':
+                            st.error("Invalid model identifier provided. Please verify the model name and try again.")
+                        else:
+                            st.error("Failed to generate a response. Please try again later.")
+                        logger.error(f"Bedrock ClientError: {str(e)}")
+                    except Exception as e:
+                        st.error("An unexpected error occurred. Please try again.")
+                        logger.error(f"Unexpected error: {str(e)}")
 
-        if st.session_state.get('chat_history'):
-            st.write("### Chat History")
-            for index, chat in enumerate(st.session_state.chat_history):
-                st.write(f"**You:** {chat['question']}")
-                st.markdown(f'<div class="chat-message"><strong>Bot:</strong><br>{chat["answer"]}</div>', unsafe_allow_html=True)
+    if st.session_state.get('chat_history'):
+        st.write("### Chat History")
+        for index, chat in enumerate(st.session_state.chat_history):
+            st.write(f"**You:** {chat['question']}")
+            st.markdown(f'<div class="chat-message"><strong>Bot:</strong><br>{chat["answer"]}</div>', unsafe_allow_html=True)
     else:
         st.info("Please upload an image or PDF to get started.")
 
