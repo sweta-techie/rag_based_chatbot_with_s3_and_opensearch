@@ -239,6 +239,8 @@ def clear_chat_history():
         st.sidebar.info("No chat history to clear.")
 
 def main():
+    st.set_page_config(page_title="RAG Chatbot Built with Amazon Bedrock & FAISS", layout="wide")
+    st.title("📚 RAG Chatbot with Amazon Bedrock & FAISS")
     st.header("Upload and Process PDFs")
     uploaded_files = st.file_uploader("Upload PDF files", type=["pdf"], accept_multiple_files=True)
 
