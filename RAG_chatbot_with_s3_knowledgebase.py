@@ -278,7 +278,7 @@ if 'clear_input' not in st.session_state:
 # ===========================
 
 def main():
-    st.title("📚 Retrieval-Augmented Generation (RAG) Chatbot with Amazon Bedrock")
+    st.title("📚 RAG Chatbot with Amazon Bedrock knowledge base")
 
     st.markdown("---")
 
