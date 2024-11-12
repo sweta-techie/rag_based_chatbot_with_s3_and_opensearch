@@ -16,7 +16,7 @@ import faiss
 # Set Page Configuration
 # ===========================
 
-st.set_page_config(page_title="RAG Chatbot with Amazon Bedrock", layout="wide")
+st.set_page_config(page_title="RAG Chatbot with Amazon Bedrock knowledge base", layout="wide")
 
 # ===========================
 # Configuration Variables
