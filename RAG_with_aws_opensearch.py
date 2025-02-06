@@ -7,7 +7,6 @@ import json
 from typing import List
 from tempfile import NamedTemporaryFile
 import time
-import random
 import uuid
 
 import streamlit as st
@@ -20,6 +19,8 @@ from botocore.exceptions import BotoCoreError, ClientError
 from requests_aws4auth import AWS4Auth
 
 from dotenv import load_dotenv
+import secrets
+
 load_dotenv()
 
 import nltk
@@ -316,7 +317,7 @@ def fetch_answer_with_backoff(question: str, index_name: str, max_retries: int =
             return fetch_answer(question, index_name)
         except ClientError as e:
             if e.response['Error']['Code'] == 'ThrottlingException':
-                wait_time = (2 ** attempt) + random.uniform(0, 1)
+                wait_time = (2 ** attempt) + secrets.SystemRandom().uniform(0, 1)
                 st.warning(f"Rate limit exceeded. Retrying in {wait_time:.2f} seconds...")
                 time.sleep(wait_time)
             else:
