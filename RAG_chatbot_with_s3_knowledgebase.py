@@ -1,6 +1,5 @@
 import os
 import time
-import random
 import boto3
 import botocore.config
 import streamlit as st
@@ -11,6 +10,7 @@ from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain_aws import BedrockEmbeddings, BedrockLLM
 from langchain_community.vectorstores import FAISS
 import faiss
+import secrets
 
 # ===========================
 # Set Page Configuration
@@ -167,7 +167,7 @@ def invoke_with_retry(llm, prompt, max_attempts=5):
                 if attempt == max_attempts:
                     raise e
                 else:
-                    sleep_time = random.uniform(1, 2 ** attempt)
+                    sleep_time = secrets.SystemRandom().uniform(1, 2 ** attempt)
                     st.warning(f"⚠️ Throttling detected. Retrying in {sleep_time:.2f} seconds...")
                     time.sleep(sleep_time)
             else:
